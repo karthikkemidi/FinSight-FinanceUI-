@@ -15,6 +15,21 @@ const COLORS = [
   "hsl(190, 80%, 50%)",
 ];
 
+const CATEGORY_ICONS: Record<string, string> = {
+  "Food & Dining": "🍽️",
+  Shopping: "🛍️",
+  Transportation: "🚌",
+  "Bills & Utilities": "🧾",
+  Entertainment: "🎬",
+  Healthcare: "💊",
+  Salary: "💼",
+  Freelance: "🧑‍💻",
+  Investment: "📈",
+  Travel: "✈️",
+  Groceries: "🥕",
+  Other: "💳",
+};
+
 const SpendingChart = ({ transactions }: SpendingChartProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const expenses = transactions.filter((t) => t.type === "expense");
@@ -84,15 +99,20 @@ const SpendingChart = ({ transactions }: SpendingChartProps) => {
           </ResponsiveContainer>
         </div>
         <div className="flex-1 space-y-2 w-full">
-          {data.map((item, i) => (
-            <div key={item.name} className="flex items-center justify-between text-sm select-none pointer-events-none">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                <span className="text-muted-foreground">{item.name}</span>
+          {data.map((item, i) => {
+            const icon = CATEGORY_ICONS[item.name] ?? "💳";
+            return (
+              <div key={item.name} className="flex items-center justify-between text-sm select-none pointer-events-none">
+                <div className="flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-base" style={{ backgroundColor: `${COLORS[i % COLORS.length]}20`, color: COLORS[i % COLORS.length] }}>
+                    {icon}
+                  </span>
+                  <span className="text-muted-foreground">{item.name}</span>
+                </div>
+                <span className="text-foreground font-medium">{((item.value / total) * 100).toFixed(1)}%</span>
               </div>
-              <span className="text-foreground font-medium">{((item.value / total) * 100).toFixed(1)}%</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       )}

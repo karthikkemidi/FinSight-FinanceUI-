@@ -77,7 +77,12 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute right-[-80px] top-8 h-80 w-80 rounded-full bg-amber-400/10 blur-3xl" />
+        <div className="absolute bottom-[-120px] left-1/4 h-96 w-96 rounded-full bg-sky-400/10 blur-3xl" />
+      </div>
       <header className="border-b border-border sticky top-0 z-10 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4 max-w-7xl">
           <div className="flex items-center gap-3">
@@ -109,7 +114,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6 max-w-7xl">
+      <main className="container mx-auto px-4 py-6 space-y-6 max-w-7xl relative z-10">
         <div className="flex items-center gap-2">
           {[
             { key: "overview", label: "Overview" },
