@@ -24,7 +24,7 @@ const InsightsSection = ({ transactions }: InsightsSectionProps) => {
       icon: BarChart3,
       title: "Highest Spending",
       value: topCategory ? topCategory[0] : "N/A",
-      detail: topCategory ? `$${topCategory[1].toFixed(2)} this month` : "",
+      detail: topCategory ? `$${topCategory[1].toFixed(2)} this month` : "Add expenses to generate insights",
       color: "text-warning",
     },
     {

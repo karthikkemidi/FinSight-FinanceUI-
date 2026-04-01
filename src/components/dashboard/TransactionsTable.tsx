@@ -27,7 +27,7 @@ const TransactionsTable = ({ transactions, role, onAdd, onEdit, onDelete }: Tran
   });
 
   const filtered = useMemo(() => {
-    let result = transactions.filter((t) => {
+    const result = transactions.filter((t) => {
       const matchSearch = t.description.toLowerCase().includes(search.toLowerCase()) || t.category.toLowerCase().includes(search.toLowerCase());
       const matchType = filterType === "all" || t.type === filterType;
       return matchSearch && matchType;
@@ -84,7 +84,7 @@ const TransactionsTable = ({ transactions, role, onAdd, onEdit, onDelete }: Tran
           </div>
           <select
             value={filterType}
-            onChange={(e) => setFilterType(e.target.value as any)}
+            onChange={(e) => setFilterType(e.target.value as "all" | "income" | "expense")}
             className="px-3 py-2 text-sm rounded-lg bg-secondary border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           >
             <option value="all">All</option>
@@ -108,7 +108,7 @@ const TransactionsTable = ({ transactions, role, onAdd, onEdit, onDelete }: Tran
               {categories.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
             <input type="number" placeholder="Amount" value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} className="px-3 py-2 text-sm rounded-lg bg-secondary border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
-            <select value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value as any })} className="px-3 py-2 text-sm rounded-lg bg-secondary border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary">
+            <select value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value as "income" | "expense" })} className="px-3 py-2 text-sm rounded-lg bg-secondary border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary">
               <option value="expense">Expense</option>
               <option value="income">Income</option>
             </select>

@@ -32,6 +32,11 @@ const SpendingChart = ({ transactions }: SpendingChartProps) => {
         <p className="text-sm text-muted-foreground">Statistics</p>
         <h3 className="text-lg font-semibold text-foreground">Spending by Category</h3>
       </div>
+      {data.length === 0 ? (
+        <div className="h-[200px] flex items-center justify-center text-sm text-muted-foreground">
+          No expense data yet. Add expenses to see the breakdown.
+        </div>
+      ) : (
       <div className="flex flex-col lg:flex-row items-center gap-4">
         <div className="h-[200px] w-[200px]">
           <ResponsiveContainer width="100%" height="100%">
@@ -65,6 +70,7 @@ const SpendingChart = ({ transactions }: SpendingChartProps) => {
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 };
