@@ -29,26 +29,26 @@ const SpendingChart = ({ transactions }: SpendingChartProps) => {
   const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
-    <div className="glass-card p-6 animate-fade-in" style={{ animationDelay: "400ms" }}>
+    <div className="glass-card p-6 h-full flex flex-col animate-fade-in transition-transform duration-300 hover:-translate-y-1" style={{ animationDelay: "400ms" }}>
       <div className="mb-4">
         <p className="text-sm text-muted-foreground">Statistics</p>
         <h3 className="text-lg font-semibold text-foreground">Spending by Category</h3>
       </div>
       {data.length === 0 ? (
-        <div className="h-[200px] flex items-center justify-center text-sm text-muted-foreground">
+        <div className="h-[200px] flex-1 flex items-center justify-center text-sm text-muted-foreground">
           No expense data yet. Add expenses to see the breakdown.
         </div>
       ) : (
-      <div className="flex flex-col lg:flex-row items-center gap-4">
-        <div className="h-[200px] w-[200px]">
+      <div className="flex flex-col lg:flex-row items-center gap-4 flex-1">
+        <div className="h-[240px] w-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={55}
-                outerRadius={85}
+                innerRadius={60}
+                outerRadius={95}
                 dataKey="value"
                 paddingAngle={3}
                 activeIndex={activeIndex ?? undefined}
@@ -56,7 +56,7 @@ const SpendingChart = ({ transactions }: SpendingChartProps) => {
                   const { outerRadius, ...rest } = props;
                   return (
                     <g>
-                      <Sector {...rest} innerRadius={55} outerRadius={outerRadius + 6} stroke="none" />
+                      <Sector {...rest} innerRadius={60} outerRadius={outerRadius + 6} stroke="none" />
                       <Sector {...rest} innerRadius={outerRadius + 8} outerRadius={outerRadius + 12} fillOpacity={0.18} stroke="none" />
                     </g>
                   );

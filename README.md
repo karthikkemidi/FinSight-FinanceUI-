@@ -1,48 +1,45 @@
-# Finance Dashboard UI
+# FinSight — Finance Dashboard UI
 
-A responsive finance dashboard built with React, Vite, TypeScript, Tailwind/shadcn, and Recharts. It showcases a clean UI, role-based controls (viewer/admin), transaction management, insights, and export-ready mock data. Everything runs fully on the frontend with local storage persistence.
+A responsive finance dashboard built with React, Vite, TypeScript, Tailwind/shadcn, and Recharts. It delivers summary cards, charts, transactions with role-based controls, insights, CSV export, and localStorage persistence—all frontend-only, no backend.
 
-## Features
-- Summary cards for balance, income, and expenses.
-- Time-series and categorical visuals (balance trend, spending breakdown).
-- Transactions table with search, filter, sort, and admin-only add/edit/delete.
-- Role switcher (viewer vs admin) with guarded actions.
-- Insights for top spend, balance growth, and expense trend.
-- CSV export and one-click data reset to seeded mock data.
-- Local storage persistence for role and transactions, responsive layout, and empty states.
+## Key Features
+- Dashboard overview: total balance, income, expenses with tabbed navigation (Overview vs Transactions).
+- Visuals: monthly balance trend (area) and spending breakdown (pie) with hover highlight.
+- Transactions: search, filter, sort; admin-only add/edit/delete/import (CSV/JSON); viewer is read-only; CSV export; reset to seeded data; shown on dedicated tab.
+- Role switcher: viewer/admin toggle with guarded actions.
+- Theming: light/dark toggle backed by design tokens.
+- Insights: highest spending category, balance growth, expense trend.
+- UX: responsive layout, empty states, tooltip theming, no external branding.
+
+## Screens & Assets
+- Main dashboard, charts, transactions, insights: run locally to view.
+- Placeholder and favicon live in `public/` (`placeholder.svg`, `favicon.svg`). Replace with your own logos if desired.
 
 ## Getting Started
 ```bash
-# install deps
-npm install
-
-# run dev server
-npm run dev
-
-# lint
-npm run lint
-
-# tests (vitest)
-npm test
+npm install          # install deps
+npm run dev          # start dev server (default http://localhost:5173)
+npm run lint         # lint (known fast-refresh warnings from shared UI exports)
+npm test             # vitest suite
 ```
 
-Open the dev URL shown in the terminal. Switch roles via the header toggle; admin can add/edit/delete transactions. Use Export CSV to download current transactions and Reset Data to restore the seeded mock set.
-
-## Notes & Assumptions
-- Mock data is local; no backend required.  
-- Charts use mocked monthly trend data plus live transaction breakdowns.  
-- Local storage may be cleared anytime to start fresh.  
-- No third-party branding or watermarks are present.  Implementation uses only OSS dependencies.  
+## Usage Notes
+- Role toggle in header: switch to Admin to add/edit/delete transactions; Viewer is read-only.
+- Export CSV downloads current transactions; Import CSV/JSON is available only in Admin; Reset Data restores seeded mock data.
+- Data and role persist in localStorage; clear storage to start fresh.
 
 ## Project Structure
-- `src/pages`: Dashboard (`Index`) and 404.  
-- `src/components/dashboard`: Cards, charts, insights, role switcher, transactions table.  
-- `src/components/ui`: shadcn/ui primitives.  
-- `src/data`: Types, mock transactions, monthly series.  
-- `src/hooks`: Local storage helper.  
+- `src/pages`: `Index` (dashboard), `NotFound`.
+- `src/components/dashboard`: summary cards, charts, insights, role switcher, transactions table.
+- `src/components/ui`: shadcn/ui primitives.
+- `src/data`: types, mock transactions, monthly series.
+- `src/hooks`: `useLocalStorage`.
 
-## Next Enhancements (optional)
-- Light/dark toggle using the existing design tokens.  
-- Import from CSV/JSON, richer filters (date range/category), and grouping.  
-- Mock API layer with latency to exercise React Query.  
-- Animations for table interactions and chart transitions.  
+## Assumptions
+- Mock/local data only; no backend.
+- Charts use static monthly series + live transaction breakdown.
+- Design tokens/theme in `src/index.css`; no third-party watermarks.
+
+## Optional Enhancements
+- Mock API layer with React Query for latency simulation (seeds from localStorage/mocks).
+- Extra animations for table/charts and deploy to Vercel/Netlify.
