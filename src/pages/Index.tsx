@@ -62,7 +62,7 @@ const Index = () => {
               <span className="text-primary-foreground font-bold text-sm">F</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">FinDash</h1>
+              <h1 className="text-xl font-bold text-foreground">FinSight</h1>
               <p className="text-xs text-muted-foreground">Personal finance pulse at a glance</p>
             </div>
           </div>

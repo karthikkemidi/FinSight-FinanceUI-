@@ -1,4 +1,5 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from "recharts";
+import { useState } from "react";
 import { Transaction } from "@/data/mockData";
 
 interface SpendingChartProps {
@@ -15,6 +16,7 @@ const COLORS = [
 ];
 
 const SpendingChart = ({ transactions }: SpendingChartProps) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const expenses = transactions.filter((t) => t.type === "expense");
   const byCategory: Record<string, number> = {};
   expenses.forEach((t) => {
@@ -41,9 +43,30 @@ const SpendingChart = ({ transactions }: SpendingChartProps) => {
         <div className="h-[200px] w-[200px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={data} cx="50%" cy="50%" innerRadius={55} outerRadius={85} dataKey="value" paddingAngle={3}>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                innerRadius={55}
+                outerRadius={85}
+                dataKey="value"
+                paddingAngle={3}
+                activeIndex={activeIndex ?? undefined}
+                activeShape={(props) => {
+                  const { outerRadius, ...rest } = props;
+                  return (
+                    <g>
+                      <Sector {...rest} innerRadius={55} outerRadius={outerRadius + 6} stroke="none" />
+                      <Sector {...rest} innerRadius={outerRadius + 8} outerRadius={outerRadius + 12} fillOpacity={0.18} stroke="none" />
+                    </g>
+                  );
+                }}
+                onMouseEnter={(_, idx) => setActiveIndex(idx)}
+                onMouseLeave={() => setActiveIndex(null)}
+                onClick={() => setActiveIndex(null)}
+              >
                 {data.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} style={{ outline: "none" }} />
                 ))}
               </Pie>
               <Tooltip
@@ -53,6 +76,8 @@ const SpendingChart = ({ transactions }: SpendingChartProps) => {
                   borderRadius: "8px",
                   color: "hsl(210, 40%, 96%)",
                 }}
+                labelStyle={{ color: "hsl(210, 40%, 96%)" }}
+                itemStyle={{ color: "hsl(210, 40%, 96%)" }}
                 formatter={(value: number) => [`$${value.toFixed(2)}`]}
               />
             </PieChart>
@@ -60,7 +85,7 @@ const SpendingChart = ({ transactions }: SpendingChartProps) => {
         </div>
         <div className="flex-1 space-y-2 w-full">
           {data.map((item, i) => (
-            <div key={item.name} className="flex items-center justify-between text-sm">
+            <div key={item.name} className="flex items-center justify-between text-sm select-none pointer-events-none">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                 <span className="text-muted-foreground">{item.name}</span>
