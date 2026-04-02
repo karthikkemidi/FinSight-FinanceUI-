@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { mockTransactions, Transaction, Role } from "@/data/mockData";
 import SummaryCards from "@/components/dashboard/SummaryCards";
@@ -15,6 +15,7 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<"overview" | "transactions">("overview");
   const [role, setRole] = useLocalStorage<Role>("fin-role", "viewer");
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>("fin-transactions", []);
+  const hasInitializedTransactions = useRef(false);
 
   const transactionsQuery = useQuery({
     queryKey: ["transactions"],
@@ -23,17 +24,41 @@ const Index = () => {
   });
 
   useEffect(() => {
-    if (transactionsQuery.data) {
-      setTransactions(transactionsQuery.data);
-    } else if (!transactionsQuery.isLoading && !transactionsQuery.isError && !transactions.length) {
-      setTransactions(mockTransactions);
+    if (hasInitializedTransactions.current) return;
+
+    if (transactions.length > 0) {
+      hasInitializedTransactions.current = true;
+      return;
     }
-  }, [transactionsQuery.data, transactionsQuery.isLoading, transactionsQuery.isError, transactions, setTransactions]);
+
+    if (transactionsQuery.data && transactionsQuery.data.length > 0) {
+      setTransactions(transactionsQuery.data);
+      hasInitializedTransactions.current = true;
+      return;
+    }
+
+    if (!transactionsQuery.isLoading && !transactionsQuery.isError) {
+      setTransactions(mockTransactions);
+      hasInitializedTransactions.current = true;
+    }
+  }, [transactions.length, transactionsQuery.data, transactionsQuery.isLoading, transactionsQuery.isError, setTransactions]);
 
   const { totalIncome, totalExpenses, totalBalance } = useMemo(() => {
     const totalIncome = transactions.filter((t) => t.type === "income").reduce((s, t) => s + t.amount, 0);
     const totalExpenses = transactions.filter((t) => t.type === "expense").reduce((s, t) => s + t.amount, 0);
     return { totalIncome, totalExpenses, totalBalance: totalIncome - totalExpenses };
+  }, [transactions]);
+
+  const topSpendingCategory = useMemo(() => {
+    const spendingByCategory: Record<string, number> = {};
+    transactions
+      .filter((t) => t.type === "expense")
+      .forEach((t) => {
+        spendingByCategory[t.category] = (spendingByCategory[t.category] ?? 0) + t.amount;
+      });
+
+    const sorted = Object.entries(spendingByCategory).sort((a, b) => b[1] - a[1]);
+    return sorted[0]?.[0] ?? "N/A";
   }, [transactions]);
 
   const handleAdd = (data: Omit<Transaction, "id">) => {
@@ -65,6 +90,20 @@ const Index = () => {
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", "transactions.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportJson = () => {
+    if (!transactions.length) return;
+    const json = JSON.stringify(transactions, null, 2);
+    const blob = new Blob([json], { type: "application/json;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "transactions.json");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -105,6 +144,13 @@ const Index = () => {
               Export CSV
             </button>
             <button
+              onClick={handleExportJson}
+              className="px-3 py-2 text-sm rounded-lg border border-border bg-secondary text-foreground hover:bg-accent transition-colors"
+              disabled={!transactions.length}
+            >
+              Export JSON
+            </button>
+            <button
               onClick={handleReset}
               className="px-3 py-2 text-sm rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
@@ -115,6 +161,23 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-6 max-w-7xl relative z-10">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="rounded-xl border border-border bg-card/70 backdrop-blur-sm p-4">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Active records</p>
+            <p className="text-xl font-semibold text-foreground mt-1">{transactions.length}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card/70 backdrop-blur-sm p-4">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Top spending category</p>
+            <p className="text-xl font-semibold text-foreground mt-1">{topSpendingCategory}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-gradient-to-r from-primary/15 to-amber-300/10 p-4 border-primary/30">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Net position</p>
+            <p className={`text-xl font-semibold mt-1 ${totalBalance >= 0 ? "text-success" : "text-destructive"}`}>
+              {totalBalance >= 0 ? "+" : "-"}${Math.abs(totalBalance).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            </p>
+          </div>
+        </section>
+
         <div className="flex items-center gap-2">
           {[
             { key: "overview", label: "Overview" },

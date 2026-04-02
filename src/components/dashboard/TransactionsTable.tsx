@@ -127,10 +127,25 @@ const TransactionsTable = ({ transactions, role, onAdd, onEdit, onDelete, onImpo
     if (items.length) onImport(items);
   };
 
+  const clearFilters = () => {
+    setSearch("");
+    setFilterType("all");
+    setFilterCategory("all");
+    setStartDate("");
+    setEndDate("");
+    setSortField("date");
+    setSortDir("desc");
+  };
+
   return (
     <div className="glass-card p-6 animate-fade-in" style={{ animationDelay: "500ms" }}>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <h3 className="text-lg font-semibold text-foreground">Transactions</h3>
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">Transactions</h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            Showing {filtered.length} of {transactions.length} transaction{transactions.length === 1 ? "" : "s"}
+          </p>
+        </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <div className="relative flex-1 sm:flex-none">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -177,6 +192,12 @@ const TransactionsTable = ({ transactions, role, onAdd, onEdit, onDelete, onImpo
             className="px-3 py-2 text-sm rounded-lg bg-secondary border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             aria-label="End date"
           />
+          <button
+            onClick={clearFilters}
+            className="px-3 py-2 text-sm rounded-lg bg-secondary text-foreground border border-border hover:bg-accent transition-colors"
+          >
+            Clear filters
+          </button>
           {role === "admin" && (
             <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
               <Plus className="h-4 w-4" /> Add
