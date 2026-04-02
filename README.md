@@ -40,9 +40,6 @@ npm test             # vitest suite
 - Charts use static monthly series + live transaction breakdown.
 - Design tokens/theme in `src/index.css`; no third-party watermarks.
 
-## Optional Enhancements
-- Mock API layer with React Query for latency simulation (seeds from localStorage/mocks).
-- Extra animations for table/charts and deploy to Vercel/Netlify.
 
 ## Submission Notes (Assignment Form)
 
